@@ -1,0 +1,94 @@
+/***********************************
+ * Струк Степан Андреевич          *
+ * Работа с файлами                *
+ * https://onlinegdb.com/FvCRlgOvdV *
+ ***********************************/
+
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+struct sTV {
+  string name; //производитель
+  int model; //номер модели
+  int diagonal; //диагональ(в см)
+  int count; //количество на складе
+  int price; //цена за 1 шт.
+};
+
+int main() {
+  int countOfTVs, filter, priceSum = 0, biggestDiagonalNumber = 0;
+  string filterName = "";
+  
+  cout << "Сколько уникальных телевизоров? " << endl;
+  cin >> countOfTVs;
+
+  sTV tvCollection[countOfTVs];
+
+  ifstream fin("TVs.txt");
+  
+  cout << "Есть телевизоры от производителей:" << endl
+       << "1) Xiaomi" << endl
+       << "2) TCL" << endl 
+       << "3) Samsung" << endl
+       << "4) LG." << endl
+       << "Вывести информацию о производителе(введите номер):";
+
+  while (filterName == "") {
+    cin >> filter;
+    cout << endl;
+  
+    switch (filter){
+      case 1:
+        filterName = "Xiaomi";
+        break;
+      case 2:
+        filterName = "TCL";
+        break;
+      case 3:
+        filterName = "Samsung";
+        break;
+      case 4:
+        filterName = "LG";
+        break;
+      default:
+        cout << endl << "Такого производителя нет." << endl << "Введите номер: ";
+    }
+  }
+  
+  if (fin.is_open() == 0) {
+    cout << "Не открылось" << endl;
+  } else {
+    for (int TVIndex = 0; TVIndex < countOfTVs; ++TVIndex) {
+      fin >> tvCollection[TVIndex].name
+          >> tvCollection[TVIndex].model
+          >> tvCollection[TVIndex].diagonal
+          >> tvCollection[TVIndex].count
+          >> tvCollection[TVIndex].price;
+      
+      if (tvCollection[TVIndex].diagonal > tvCollection[biggestDiagonalNumber].diagonal) {
+        biggestDiagonalNumber = TVIndex;
+      }
+      
+      if (tvCollection[TVIndex].name == filterName) {
+        cout << tvCollection[TVIndex].name << " "
+             << tvCollection[TVIndex].model << " "
+             << tvCollection[TVIndex].diagonal << " "
+             << tvCollection[TVIndex].count << " "
+             << tvCollection[TVIndex].price << endl;
+        priceSum += tvCollection[TVIndex].price;
+      }
+    }
+    cout << "Общая стоимость: " << priceSum << endl;
+    cout << "Наибольшая диагональ у телевизора " << tvCollection[biggestDiagonalNumber].name 
+         << " " << tvCollection[biggestDiagonalNumber].model;
+         
+    fin.close();
+  }
+  
+  //system("pause");
+  
+  return 0;
+}
